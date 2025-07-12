@@ -48,6 +48,30 @@ const std::vector<uint8_t> &bmpFile::getGrayscaleData() const
     return data;
 }
 
+void bmpFile::rebuildFile(std::string &newFileLocation)
+{
+    fileLocation = newFileLocation;
+    infoHeader.biBitCount = 0;
+    fileHeader.bfType = 0;
+    if (!readFileHeaders())
+    {
+        std::cerr << "Invalid BMP header in " << this->fileLocation << std::endl;
+        abort();
+    }
+}
+
+void bmpFile::rebuildFile(std::string &&newFileLocation)
+{
+    fileLocation = std::move(newFileLocation);
+    infoHeader.biBitCount = 0;
+    fileHeader.bfType = 0;
+    if (!readFileHeaders())
+    {
+        std::cerr << "Invalid BMP header in " << this->fileLocation << std::endl;
+        abort();
+    }
+}
+
 bool bmpFile::readFileHeaders()
 {
     std::ifstream file(fileLocation, std::ios::binary);

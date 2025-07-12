@@ -11,7 +11,7 @@
 #pragma pack(push, 1)
 struct bmpFileHeader final
 {
-    uint16_t bfType;
+    uint16_t bfType = 0;
     uint32_t bfSize;
     uint16_t bfReserved1;
     uint16_t bfReserved2;
@@ -29,7 +29,7 @@ struct bmpInfoHeader final
     int32_t biWidth;
     int32_t biHeight;
     uint16_t biPlanes;
-    uint16_t biBitCount;
+    uint16_t biBitCount = 0;
     uint32_t biCompression;
     uint32_t biSizeImage;
     int32_t biXPelsPerMeter;
@@ -53,6 +53,9 @@ public:
     uint32_t getWidth() const;
     uint32_t getHeight() const;
     const std::vector<uint8_t> &getGrayscaleData() const;
+
+    void rebuildFile(std::string &newFileLocation);
+    void rebuildFile(std::string &&newFileLocation);
 
 private:
     bool readFileHeaders();
