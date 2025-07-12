@@ -43,7 +43,7 @@ uint32_t bmpFile::getHeight() const
     return height;
 }
 
-const std::vector<uint8_t> &bmpFile::getGrayscaleData() const
+const std::vector<uint8_t> &bmpFile::getData() const
 {
     return data;
 }
@@ -53,6 +53,7 @@ void bmpFile::rebuildFile(std::string &newFileLocation)
     fileLocation = newFileLocation;
     infoHeader.biBitCount = 0;
     fileHeader.bfType = 0;
+    data.clear();
     if (!readFileHeaders())
     {
         std::cerr << "Invalid BMP header in " << this->fileLocation << std::endl;
@@ -65,6 +66,7 @@ void bmpFile::rebuildFile(std::string &&newFileLocation)
     fileLocation = std::move(newFileLocation);
     infoHeader.biBitCount = 0;
     fileHeader.bfType = 0;
+    data.clear();
     if (!readFileHeaders())
     {
         std::cerr << "Invalid BMP header in " << this->fileLocation << std::endl;

@@ -44,15 +44,14 @@ struct bmpInfoHeader final
 /**
  * @brief Represents a BMP file as a binary mask: white pixels = 0, others = 1
  */
-class bmpFile final
+struct bmpFile final
 {
-public:
     explicit bmpFile(std::string &&fileLocation);
     explicit bmpFile(std::string &fileLocation);
 
     uint32_t getWidth() const;
     uint32_t getHeight() const;
-    const std::vector<uint8_t> &getGrayscaleData() const;
+    const std::vector<uint8_t> &getData() const;
 
     void rebuildFile(std::string &newFileLocation);
     void rebuildFile(std::string &&newFileLocation);
