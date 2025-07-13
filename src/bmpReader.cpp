@@ -10,7 +10,7 @@ bool bmpFileHeader::isValid() const
 
 bool bmpInfoHeader::isValid() const
 {
-    return biBitCount == 24 && biCompression == 0;
+    return biBitCount == 32 && (biCompression == 0 || biCompression == 3);
 }
 
 bmpFile::bmpFile(std::string &&fileLocation)
@@ -82,11 +82,14 @@ bool bmpFile::readFileHeaders()
 
     if (!file.read(reinterpret_cast<char *>(&fileHeader), sizeof(fileHeader)))
         return false;
+    std::cout << "bfType = " << std::hex << fileHeader.bfType << std::dec << std::endl;
     if (!fileHeader.isValid())
         return false;
 
     if (!file.read(reinterpret_cast<char *>(&infoHeader), sizeof(infoHeader)))
         return false;
+    std::cout << "biBitCount = " << infoHeader.biBitCount << std::endl;
+    std::cout << "biCompression = " << infoHeader.biCompression << std::endl;
     if (!infoHeader.isValid())
         return false;
 
@@ -94,7 +97,8 @@ bool bmpFile::readFileHeaders()
     height = std::abs(infoHeader.biHeight);
     bool flip = infoHeader.biHeight > 0;
 
-    const int rowSize = ((width * 3 + 3) / 4) * 4;
+    int bytesPerPixel = infoHeader.biBitCount / 8;
+    const int rowSize = ((width * bytesPerPixel + 3) / 4) * 4;
     std::vector<uint8_t> rawPixels(rowSize * height);
     file.seekg(fileHeader.bfOffBits);
     file.read(reinterpret_cast<char *>(rawPixels.data()), rawPixels.size());
@@ -110,7 +114,7 @@ bool bmpFile::readFileHeaders()
         int srcY = flip ? (height - 1 - y) : y;
         for (int x = 0; x < width; ++x)
         {
-            int srcIdx = srcY * rowSize + x * 3;
+            int srcIdx = srcY * rowSize + x * bytesPerPixel;
             uint8_t b = rawPixels[srcIdx];
             uint8_t g = rawPixels[srcIdx + 1];
             uint8_t r = rawPixels[srcIdx + 2];

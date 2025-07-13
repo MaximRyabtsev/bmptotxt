@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 txtBitMap::txtBitMap(const std::string &locationAndName, int numberOfPages, int sizeOfPage) : sizeOfPage(sizeOfPage)
 {
@@ -15,7 +16,7 @@ txtBitMap::txtBitMap(const std::string &locationAndName, int numberOfPages, int 
     file << "char animation[" << std::to_string(numberOfPages) << "][" << std::to_string(sizeOfPage) << "] = {";
 }
 
-void txtBitMap::addNewPage(const std::vector<uint8_t> &page, bool lastFlag) const
+void txtBitMap::addNewPage(const std::vector<uint8_t> &page, bool lastFlag)
 {
     if (sizeOfPage != page.size())
     {
@@ -37,7 +38,7 @@ void txtBitMap::addNewPage(const std::vector<uint8_t> &page, bool lastFlag) cons
         file << ",";
 }
 
-void txtBitMap::createFooter() const
+void txtBitMap::createFooter()
 {
     file << "};\n";
 }
